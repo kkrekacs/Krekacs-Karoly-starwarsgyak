@@ -86,13 +86,16 @@ function setMainShipList(parameterArray) {
 
 function getSingleShip(event) {
   var pathArray = event.path.slice();
-  var output = document.querySelector('.searchbar');
+  var output1 = document.querySelector('.searchbar');
+  var output2 = document.querySelector('.statistics');
   if (pathArray[0].parentNode.className !== 'image') {
     document.querySelector('.one-spaceship').innerHTML = pathArray[0].parentNode.innerHTML;
-    document.querySelector('.one-spaceship').appendChild(output);
+    document.querySelector('.one-spaceship').appendChild(output2);
+    document.querySelector('.one-spaceship').appendChild(output1);
   } else {
     document.querySelector('.one-spaceship').innerHTML = pathArray[0].parentNode.parentNode.innerHTML;
-    document.querySelector('.one-spaceship').appendChild(output);
+    document.querySelector('.one-spaceship').appendChild(output2);
+    document.querySelector('.one-spaceship').appendChild(output1);
   }
 }
 
@@ -108,11 +111,84 @@ function getData(url, callbackFunc) {
   xhttp.send();
 }
 
+function getSingleCrewShipsTotalNumber(parameterArray) {
+  var totalNumber = 0;
+  for (var i = 0; i < parameterArray.length; i++) {
+    if (parseInt(parameterArray[i].crew, 10) === 1) {
+      totalNumber++;
+    }
+  }
+
+  return totalNumber;
+}
+
+function getShipWithBiggestCargo(parameterArray) {
+  var biggestCargo = parseInt(parameterArray[0].cargo_capacity, 10);
+  var shipName = parameterArray[0].model;
+  for (var i = 1; i < parameterArray.length; i++) {
+    if (parseInt(parameterArray[i].cargo_capacity, 10) > biggestCargo) {
+      biggestCargo = parseInt(parameterArray[i].cargo_capacity, 10);
+      shipName = parameterArray[i].model;
+    }
+  }
+
+  return shipName;
+}
+
+function getTotalPassengerCount(parameterArray) {
+  var totalPassengers = 0;
+  for (var i = 0; i < parameterArray.length; i++) {
+    if (parseInt(parameterArray[i].passengers, 10) > -1 ) {
+      totalPassengers += parseInt(parameterArray[i].passengers, 10);
+    }
+  }
+
+  return totalPassengers;
+}
+
+function getLongestShip(parameterArray) {
+  var longestShip = parameterArray[0].lengthiness;
+  var shipImage = parameterArray[0].image;
+  for (var i = 1; i < parameterArray.length; i++) {
+    if (parameterArray[i].lengthiness > longestShip) {
+      longestShip = parameterArray[i].lengthiness;
+      shipImage = parameterArray[i].image;
+    }
+  }
+
+  return shipImage;
+}
+
+function getStatistics(parameterArray) {
+  var statisticsDiv = document.createElement('div');
+  statisticsDiv.className = 'statistics';
+  var output = document.querySelector('.searchbar');
+  statisticsDiv.innerHTML +=
+  `<p>Egy fős legénységgel rendelkező hajók darabszáma:<br>${getSingleCrewShipsTotalNumber(parameterArray)}<br></p>`;
+  statisticsDiv.innerHTML +=
+  `<p>A legnagyobb cargo_capacity-vel rendelkező hajó neve:<br>${getShipWithBiggestCargo(parameterArray)}<br></p>`;
+  statisticsDiv.innerHTML +=
+  `<p>Az összes hajó utasainak összesített száma:<br>${getTotalPassengerCount(parameterArray)}<br></p>`;
+  statisticsDiv.innerHTML +=
+  `<p>A leghosszabb hajó képének a neve:<br>${getLongestShip(parameterArray)}<br></p>`;
+  document.querySelector('.one-spaceship').innerHTML = '';
+  document.querySelector('.one-spaceship').appendChild(statisticsDiv);
+  document.querySelector('.one-spaceship').appendChild(output);
+}
+
 function successAjax(xhttp) {
   // Innen lesz elérhető a JSON file tartalma, tehát az adatok amikkel dolgoznod kell
   var userDatas = JSON.parse(xhttp.responseText);
   // Innen lehet hívni.
   setMainShipList(
+    setNullPropertiesToUnknown(
+      doRemoveObjectsWithNullConsumables(
+        getShipsOrderedByNumberProperty(userDatas, 'cost_in_credits')
+      )
+    )
+  );
+
+  getStatistics(
     setNullPropertiesToUnknown(
       doRemoveObjectsWithNullConsumables(
         getShipsOrderedByNumberProperty(userDatas, 'cost_in_credits')
