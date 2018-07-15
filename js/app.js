@@ -55,7 +55,7 @@ function setNullPropertiesToUnknown(parameterArray) {
 
 function getSingleShipToDiv(parameterObject, objectIndex) {
   var newShipDiv = document.createElement('div');
-  newShipDiv.className = `ship spacehip${objectIndex}`;
+  newShipDiv.className = `ship spaceship${objectIndex}`;
   var newShipPropertiesDiv = document.createElement('div');
   newShipPropertiesDiv.className = 'properties';
   var newShipPropertyValuesDiv = document.createElement('div');
@@ -72,6 +72,7 @@ function getSingleShipToDiv(parameterObject, objectIndex) {
   newShipDiv.appendChild(newShipPropertiesDiv);
   newShipDiv.appendChild(newShipPropertyValuesDiv);
   newShipDiv.appendChild(newShipImageDiv);
+  newShipDiv.addEventListener('click', getSingleShip);
 
   return newShipDiv;
 }
@@ -80,6 +81,18 @@ function setMainShipList(parameterArray) {
   var mainShipList = document.querySelector('.spaceship-list');
   for (var i = 0; i < parameterArray.length; i++) {
     mainShipList.appendChild(getSingleShipToDiv(parameterArray[i], i));
+  }
+}
+
+function getSingleShip(event) {
+  var pathArray = event.path.slice();
+  var output = document.querySelector('.searchbar');
+  if (pathArray[0].parentNode.className !== 'image') {
+    document.querySelector('.one-spaceship').innerHTML = pathArray[0].parentNode.innerHTML;
+    document.querySelector('.one-spaceship').appendChild(output);
+  } else {
+    document.querySelector('.one-spaceship').innerHTML = pathArray[0].parentNode.parentNode.innerHTML;
+    document.querySelector('.one-spaceship').appendChild(output);
   }
 }
 
@@ -107,4 +120,5 @@ function successAjax(xhttp) {
     )
   );
 }
+
 getData('/json/spaceships.json', successAjax);
