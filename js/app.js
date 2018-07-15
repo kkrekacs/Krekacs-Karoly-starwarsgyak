@@ -39,6 +39,20 @@ function doRemoveObjectsWithNullConsumables(parameterArray) {
   return tempArray;
 }
 
+function setNullPropertiesToUnknown(parameterArray) {
+  var tempArray = parameterArray.slice();
+  var propertyKeys = Object.keys(tempArray[0]);
+  for (var i = 0; i < tempArray.length; i++) {
+    for (var j = 0; j < propertyKeys.length; j++) {
+      if (tempArray[i][propertyKeys[j]] === null) {
+        tempArray[i][propertyKeys[j]] = 'unknown';
+      }
+    }
+  }
+
+  return tempArray;
+}
+
 function getData(url, callbackFunc) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
