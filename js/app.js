@@ -176,6 +176,32 @@ function getStatistics(parameterArray) {
   document.querySelector('.one-spaceship').appendChild(output);
 }
 
+function getSearchData(searchingForName) {
+  var divsToSearchIn = document.querySelector('.spaceship-list').children;
+  var index = 0;
+  var found = false;
+  var output = 'A keresett hajó nem található';
+  while (!found && index < divsToSearchIn.length) {
+    if (divsToSearchIn[index].innerText.toLowerCase().indexOf(searchingForName.toLowerCase()) > -1) {
+      found = true;
+      output = divsToSearchIn[index].innerHTML;
+    }
+    index++;
+  }
+
+  return output;
+}
+
+function getShipbyName() {
+  var searchingForName = document.querySelector('#search-text').value;
+  document.querySelector('#search-text').value = '';
+  var output1 = document.querySelector('.searchbar');
+  var output2 = document.querySelector('.statistics');
+  document.querySelector('.one-spaceship').innerHTML = getSearchData(searchingForName);
+  document.querySelector('.one-spaceship').appendChild(output2);
+  document.querySelector('.one-spaceship').appendChild(output1);
+}
+
 function successAjax(xhttp) {
   // Innen lesz elérhető a JSON file tartalma, tehát az adatok amikkel dolgoznod kell
   var userDatas = JSON.parse(xhttp.responseText);
@@ -195,6 +221,8 @@ function successAjax(xhttp) {
       )
     )
   );
+
+  document.querySelector('#search-button').addEventListener('click', getShipbyName);
 }
 
 getData('/json/spaceships.json', successAjax);
