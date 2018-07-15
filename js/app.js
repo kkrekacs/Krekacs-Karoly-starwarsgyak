@@ -25,6 +25,20 @@ function getShipsOrderedByNumberProperty(parameterArray, parameterProperty) {
   return tempArray;
 }
 
+function doRemoveObjectsWithNullConsumables(parameterArray) {
+  var tempArray = parameterArray.slice();
+  var propertyKeys = Object.keys(tempArray[0]);
+  var propertyIndex = propertyKeys.indexOf('consumables');
+  for (var i = 0; i < tempArray.length; i++) {
+    if (typeof tempArray[i][propertyKeys[propertyIndex]] === 'object') {
+      tempArray.splice(i, 1);
+      i--;
+    }
+  }
+
+  return tempArray;
+}
+
 function getData(url, callbackFunc) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
