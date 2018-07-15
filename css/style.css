@@ -1,3 +1,28 @@
+div.ship {
+  height: 270px;;
+}
+
+div.properties {
+  float: left;
+  font-weight: bold;
+  text-align: right;
+  width: 25%;
+  overflow: auto;
+}
+
+div.values {
+  padding: 20px 0px;
+  float: left;
+  width: 25%;
+  overflow: auto;
+}
+
+div.image {
+  float: left;
+  width: 50%;
+  overflow: auto;
+}
+
 body{
   margin:0;
   font-size: 16px;
